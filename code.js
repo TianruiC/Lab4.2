@@ -8,19 +8,34 @@ var draw=function(data)
   var width=screen.width-margins.right-margins.left
   var pound=data.puppies.map(function(d,i){
     return {
-      puppy:data.puppies[i],
+      puppies:data.puppies[i],
       kittens:data.kittens[i],
       day:i,
       pets:data.puppies[i]+data.kittens[i]
     }
   })
-  console.log(d3.max(data,function(d){ return d.puppies+d.kittens}))
   var xScale=d3.scaleLinear()
-     .domain([0,pound.length)])
+     .domain([0,pound.length])
      .nice()
      .range([0,width])
   var yScale = d3.scaleLinear()
                   .domain([0,d3.max(data,function(d){ return d.puppies+d.kittens})])
                   .nice()
                   .range([height,margins.top])
+  var svg=d3.select("body").append("svg")
+            .attr("id","graph")
+            .attr("width",screen.width)
+            .attr("height",screen.height)
+  var line = svg.append('g')
+                .attr('transform', 'translate(' + margins.left + ',' + margins.top+ ')')
+  var area = svg.append('g')
+                .attr('transform', 'translate(' + margins.left + ',' + margins.top+ ')')
+  var drawLine=d3.line()
+                 .x(function(d,i){return xScale(i)})
+                 .y(function(d){return yScale(d.puppies)})
+  line.append("path")
+      .datum(data)
+      .attr("d",drawLine)
+      .attr("fill","none")
+      .attr("stroke", "steelblue")
 }
